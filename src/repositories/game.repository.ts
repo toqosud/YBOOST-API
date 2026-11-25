@@ -19,8 +19,7 @@ function toGame(row: GameRow): Game {
     return new Game(row.id, row.title, row.editor, row.release_year, row.genre, row.rating);
 }
 
-// Requêtes préparées : le "?" ou "@nom" réserve une place, la valeur est passée séparément.
-// C'est ce qui protège contre l'injection SQL.
+
 const selectAll = db.prepare('SELECT * FROM games ORDER BY id');
 const selectById = db.prepare('SELECT * FROM games WHERE id = ?');
 const insert = db.prepare(
@@ -33,18 +32,15 @@ const updateById = db.prepare(
 );
 const deleteById = db.prepare('DELETE FROM games WHERE id = ?');
 
-// Récupérer tous les jeux (tableau vide s'il n'y en a aucun).
 export function findAll(): Game[] {
     return (selectAll.all() as GameRow[]).map(toGame);
 }
 
-// Récupérer un jeu par son identifiant (undefined s'il n'existe pas).
 export function findById(id: number): Game | undefined {
     const row = selectById.get(id) as GameRow | undefined;
     return row === undefined ? undefined : toGame(row);
 }
 
-// Ajouter un jeu et renvoyer le jeu créé, avec l'identifiant généré par SQLite.
 export function create(input: CreateGameInput): Game {
     const result = insert.run({
         title: input.title,
@@ -56,7 +52,6 @@ export function create(input: CreateGameInput): Game {
     return new Game(Number(result.lastInsertRowid), input.title, input.editor, input.releaseYear, input.genre, input.rating);
 }
 
-// Remplacer toutes les informations d'un jeu. Renvoie undefined si l'identifiant n'existe pas.
 export function update(id: number, input: CreateGameInput): Game | undefined {
     const result = updateById.run({
         id,
@@ -70,7 +65,6 @@ export function update(id: number, input: CreateGameInput): Game | undefined {
     return new Game(id, input.title, input.editor, input.releaseYear, input.genre, input.rating);
 }
 
-// Supprimer un jeu. Renvoie true si une ligne a bien été supprimée.
 export function remove(id: number): boolean {
     return deleteById.run(id).changes > 0;
 }

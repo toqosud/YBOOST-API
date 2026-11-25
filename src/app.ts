@@ -14,11 +14,6 @@ import {HttpError} from './services/game.service.js';
 export const app = express();
 app.use(express.json());
 
-// 2. Ajouter une page d'accueil pour vérifier que l'API fonctionne.
-app.get('/', (_req, res) => {
-    res.json({message: 'API Jeux Vidéo opérationnelle'});
-});
-
 // 3. Lire la documentation et l'afficher avec Swagger.
 const swaggerPath = path.join(projectRoot, 'docs/openapi.yaml');
 const swaggerText = fs.readFileSync(swaggerPath, 'utf8');

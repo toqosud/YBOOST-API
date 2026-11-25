@@ -3,213 +3,63 @@ openapi: 3.0.3
 info:
   title: API Jeux Vidéo
   version: 1.0.0
-  description: API de gestion d'une collection de jeux vidéo (consulter, ajouter, modifier et supprimer des jeux).
+  description: API de gestion d'une collection de jeux vidéo.
 
 servers:
   - url: http://localhost:3000
-    description: Serveur local de développement
-
-tags:
-  - name: Jeux
-    description: Opérations CRUD sur la collection de jeux
 
 paths:
   /api/games:
     get:
-      tags: [Jeux]
       summary: Récupérer tous les jeux
-      description: Renvoie la liste de tous les jeux. Le tableau est vide si la collection ne contient aucun jeu.
       responses:
         '200':
           description: Liste des jeux récupérée avec succès.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Game'
-        '500':
-          $ref: '#/components/responses/InternalError'
+          # TODO : décrire le tableau JSON d'objets Game.
+        # TODO : ajouter les réponses d'erreur pertinentes.
     post:
-      tags: [Jeux]
       summary: Ajouter un jeu
-      description: Valide les données puis enregistre un nouveau jeu. L'identifiant est généré par la base.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateGameInput'
+      # TODO : ajouter le corps JSON à partir de CreateGameInput.
       responses:
         '201':
           description: Jeu créé.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Game'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '500':
-          $ref: '#/components/responses/InternalError'
+          # TODO : décrire le jeu renvoyé.
+        # TODO : ajouter les réponses d'erreur pertinentes.
 
   /api/games/{id}:
     parameters:
       - name: id
         in: path
         required: true
-        description: Identifiant du jeu (entier strictement positif).
         schema:
           type: integer
-          minimum: 1
-          example: 3
     get:
-      tags: [Jeux]
       summary: Récupérer un jeu
-      description: Renvoie le jeu correspondant à l'identifiant.
       responses:
         '200':
           description: Jeu trouvé.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Game'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalError'
+          # TODO : décrire le jeu renvoyé.
+        # TODO : ajouter les réponses d'erreur pertinentes.
     put:
-      tags: [Jeux]
       summary: Modifier un jeu
-      description: Remplace toutes les informations modifiables du jeu. Tous les champs doivent être envoyés.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/CreateGameInput'
+      # TODO : ajouter le corps JSON à partir de CreateGameInput.
       responses:
         '200':
           description: Jeu modifié.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Game'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalError'
+          # TODO : décrire le jeu renvoyé.
+        # TODO : ajouter les réponses d'erreur pertinentes.
     delete:
-      tags: [Jeux]
       summary: Supprimer un jeu
-      description: Supprime définitivement le jeu. La réponse n'a pas de corps.
       responses:
         '204':
           description: Jeu supprimé.
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalError'
+        # TODO : ajouter les réponses d'erreur pertinentes.
 
 components:
   schemas:
     Game:
       type: object
-      required: [id, title, editor, releaseYear, genre, rating]
-      properties:
-        id:
-          type: integer
-          description: Identifiant unique généré par la base.
-          example: 1
-        title:
-          type: string
-          example: Hades
-        editor:
-          type: string
-          example: Supergiant Games
-        releaseYear:
-          type: integer
-          minimum: 1950
-          maximum: 2100
-          example: 2020
-        genre:
-          type: string
-          example: Roguelike
-        rating:
-          type: number
-          format: float
-          minimum: 0
-          maximum: 10
-          example: 9.2
+      # TODO : définir les propriétés du jeu, y compris son identifiant.
     CreateGameInput:
       type: object
-      required: [title, editor, releaseYear, genre, rating]
-      properties:
-        title:
-          type: string
-          minLength: 1
-          example: Elden Ring
-        editor:
-          type: string
-          minLength: 1
-          example: Bandai Namco
-        releaseYear:
-          type: integer
-          minimum: 1950
-          maximum: 2100
-          example: 2022
-        genre:
-          type: string
-          minLength: 1
-          example: Action-RPG
-        rating:
-          type: number
-          format: float
-          minimum: 0
-          maximum: 10
-          example: 9.5
-    Error:
-      type: object
-      required: [error]
-      properties:
-        error:
-          type: string
-          description: Message d'erreur principal.
-        details:
-          type: array
-          description: Liste des problèmes détectés, lorsqu'il y en a.
-          items:
-            type: string
-  responses:
-    BadRequest:
-      description: Requête invalide (identifiant incorrect, données invalides ou JSON mal formé).
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: Données invalides
-            details:
-              - Le titre est obligatoire
-              - La note doit être comprise entre 0 et 10
-    NotFound:
-      description: Jeu introuvable.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: Jeu introuvable
-    InternalError:
-      description: Erreur interne du serveur.
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/Error'
-          example:
-            error: Erreur interne du serveur
+      # TODO : définir les champs attendus et indiquer lesquels sont obligatoires.
